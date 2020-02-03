@@ -39,8 +39,6 @@ class Net(nn.Module):
     def test(self, x_test, y_test, loss, epoch):
         self.eval()
         with torch.no_grad():
-            # inputs= torch.from_numpy(x_test)
-            # targets= torch.from_numpy(y_test)
             outputs= self(x_test)
             cross_val= loss(outputs, y_test)
         return cross_val.item()
