@@ -5,8 +5,6 @@ import torch.optim as optim
 import torch.nn as nn
 from nn_gen import Net
 
-
-
 def main():
     v = []
     y = []
@@ -16,23 +14,23 @@ def main():
             r = data[0].split()
             v.append(r[:-1])
             y.append(r[-1])
-
-    y = np.array(y, dtype=np.float32)
-    #print(y_train)
-    net = Net()
     x = []
     for row in v:
         imageReshape = np.reshape(row, (1,14,14))
         x.append(imageReshape)
     N = len(x)
     x = np.array(x, dtype=np.float32)
+    y = np.array(y, dtype=np.float32)
+    
+    net = Net()
+
     criterion = nn.CrossEntropyLoss(reduction='mean')
     optimizer = optim.SGD(net.parameters(), lr=0.15)
     x_train = torch.tensor(x)[:N-3000]
     y_train = torch.tensor(y.transpose(), dtype=torch.long)[:N-3000]
 
     # Testing
-    x_test = torch.tensor(x[N-3000: N])
+    x_test = torch.tensor(x)[N-3000: N]
     y_test= torch.tensor(y.transpose(), dtype=torch.long)[N-3000: N]
     net.train()
 
