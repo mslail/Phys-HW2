@@ -12,40 +12,36 @@ class Net(nn.Module):
         self.conv2 = nn.Conv2d(7, 14, 3)
         self.fc1= nn.Linear(14*2*2, 84)
         self.fc2= nn.Linear(84, 14)
-        self.fc3= nn.Linear(14, 10)
+        self.fc3= nn.Linear(14, 9)
     
     def forward(self, x):
-        # print(self.conv1(x)[0])
         x = self.pool(torch.tanh(self.conv1(x)))
-        x = self.pool(torch.tanh(self.conv2(x)))
-
+        x = self.pool(torch.relu(self.conv2(x)))
         x = x.view(x.size(0), 14*2*2)
         x = func.relu(self.fc1(x))
         x = func.relu(self.fc2(x))
         x = self.fc3(x)
         return x
-    
+
     def reset(self):
         self.fc1.reset_parameters()
         self.fc2.reset_parameters()
 
     def backprop(self, x_train, y_train, loss, epoch, optimizer):
         self.train()
-        inputs= torch.from_numpy(x_train)
-        targets= torch.from_numpy(y_train)
-        print(inputs)
-        outputs= self(inputs)
-        obj_val= loss(self.forward(inputs).reshape(-1), targets)
+        outputs= self(x_train)
+        obj_val= loss(self.forward(x_train), y_train)
         optimizer.zero_grad() 
         obj_val.backward()
+        optimizer.step()
         return obj_val.item()
 
-    def test(self, data, loss, epoch):
+    def test(self, x_test, y_test, loss, epoch):
         self.eval()
         with torch.no_grad():
-            inputs= torch.from_numpy(data.x_test)
-            targets= torch.from_numpy(data.y_test)
-            outputs= self(inputs)
-            cross_val= loss(self.forward(inputs).reshape(-1), targets)
+            # inputs= torch.from_numpy(x_test)
+            # targets= torch.from_numpy(y_test)
+            outputs= self(x_test)
+            cross_val= loss(outputs, y_test)
         return cross_val.item()
         
