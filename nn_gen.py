@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as func
-from scipy import signal, ndimage
 import numpy as np
 
 
@@ -11,14 +10,14 @@ class Net(nn.Module):
         self.conv1 = nn.Conv2d(1, 7, 3)
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(7, 14, 3)
-        self.fc1= nn.Linear(14*2*2, 100)
-        self.fc2= nn.Linear(100, 32)
-        self.fc3= nn.Linear(32, 10)
+        self.fc1= nn.Linear(14*2*2, 84)
+        self.fc2= nn.Linear(84, 14)
+        self.fc3= nn.Linear(14, 10)
     
     def forward(self, x):
         # print(self.conv1(x)[0])
-        x = self.pool(func.tanh(self.conv1(x)))
-        x = self.pool(func.relu(self.conv2(x)))
+        x = self.pool(torch.tanh(self.conv1(x)))
+        x = self.pool(torch.tanh(self.conv2(x)))
 
         x = x.view(x.size(0), 14*2*2)
         x = func.relu(self.fc1(x))
