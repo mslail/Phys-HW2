@@ -1,6 +1,5 @@
-import csv
 import numpy as np
-import json, argparse, torch
+import argparse, csv, json, torch
 import torch.optim as optim
 import torch.nn as nn
 from nn_gen import Net
@@ -56,7 +55,7 @@ def main():
     x_test = torch.tensor(x)[N-3000:]
     y_test= torch.tensor(y.transpose(), dtype=torch.long)[N-3000:]
 
-    print('Attempting to start training')
+    print('Attempting to start training.')
 
     # Training
     for epoch in range(epochs):
@@ -66,9 +65,9 @@ def main():
         test_val= net.test(x_test, y_test, criterion, epoch)
 
         if not ((epoch + 1) % 5):
-                print('Epoch [{}/{}]'.format(epoch+1, epochs)+\
-                        '\tTraining Loss: {:.4f}'.format(train_val)+\
-                        '\tTest Loss: {:.4f}'.format(test_val))
+            print('Epoch [{}/{}]'.format(epoch+1, epochs)+\
+                '\tTraining Loss: {:.4f}'.format(train_val)+\
+                '\tTest Loss: {:.4f}'.format(test_val))
 
     # Testing classification
     outputs = net(x_test)
